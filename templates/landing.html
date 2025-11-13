@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoLens - AI-Powered Carbon Footprint Analysis</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 50%, #7fb069 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated background particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 50%;
+            animation: float 15s infinite linear;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            text-align: center;
+            padding: 60px 20px;
+            color: white;
+        }
+
+        .logo {
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            margin: 0 auto 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: pulse 2s infinite;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(76, 175, 80, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            background-image: url('/static/images/logo.png');
+            background-size: 80%;
+            background-repeat: no-repeat;
+            background-position: center;
+            cursor: pointer;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            animation: slideDown 1s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            animation: slideUp 1s ease-out 0.3s both;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+
+        /* Main container */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Analysis options */
+        .analysis-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+            animation-fill-mode: both;
+        }
+
+        .option-card:nth-child(1) { animation-delay: 0.1s; }
+        .option-card:nth-child(2) { animation-delay: 0.2s; }
+        .option-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .option-card:hover::before {
+            left: 100%;
+        }
+
+        .card-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .card-description {
+            color: #666;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .card-button {
+            background: linear-gradient(135deg, #2d5a27 0%, #4a7c59 50%, #66bb6a 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.3);
+        }
+
+        .card-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(45, 90, 39, 0.4);
+            background: linear-gradient(135deg, #1b4332 0%, #2d5a27 50%, #52b788 100%);
+        }
+
+        .card-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Badge for batch limit */
+        .batch-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(135deg, #e8f5e8 0%, #c8e6c9 100%);
+            color: #1b5e20;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            animation: wiggle 2s infinite;
+            border: 2px solid #4caf50;
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-3deg); }
+            75% { transform: rotate(3deg); }
+        }
+
+        /* Features section */
+        .features {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 20px;
+            padding: 40px;
+            margin: 40px 0;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .features-title {
+            text-align: center;
+            color: white;
+            font-size: 2rem;
+            margin-bottom: 30px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 20px rgba(255, 255, 255, 0.5); }
+            to { text-shadow: 0 0 30px rgba(255, 255, 255, 0.8); }
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-item {
+            text-align: center;
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.12);
+            transition: all 0.3s ease;
+            border: 1px solid rgba(76, 175, 80, 0.2);
+        }
+
+        .feature-item:hover {
+            background: rgba(255, 255, 255, 0.18);
+            transform: translateY(-5px);
+            border-color: rgba(76, 175, 80, 0.4);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.2);
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Loading animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Ripple effect */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple-animation 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple-animation {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .tagline { font-size: 1.1rem; }
+            .option-card { padding: 30px 20px; }
+            .analysis-options { grid-template-columns: 1fr; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated particles background -->
+    <div class="particles" id="particles"></div>
+
+    <div class="header">
+        <div class="logo" id="logo"></div>
+        <h1>EcoLens</h1>
+        <p class="tagline">AI-Powered Carbon Footprint Analysis for Sustainable Living</p>
+    </div>
+
+    <div class="container">
+        <div class="analysis-options" id="analysisOptions">
+            <!-- Single Image Analysis -->
+            <div class="option-card">
+                <span class="card-icon">📷</span>
+                <h3 class="card-title">Single Image Analysis</h3>
+                <p class="card-description">
+                    Upload a single product image for instant AI-powered carbon footprint analysis. 
+                    Get detailed environmental impact data with verified sources.
+                </p>
+                <button class="card-button" onclick="navigateToSingle()">
+                    Start Single Analysis
+                </button>
+            </div>
+
+            <!-- Manual Entry -->
+            <div class="option-card">
+                <span class="card-icon">✏️</span>
+                <h3 class="card-title">Manual Product Entry</h3>
+                <p class="card-description">
+                    Know your product details? Enter brand, name, and type manually 
+                    for comprehensive carbon footprint research and analysis.
+                </p>
+                <button class="card-button" onclick="navigateToManual()">
+                    Enter Product Details
+                </button>
+            </div>
+
+            <!-- Batch Analysis -->
+            <div class="option-card">
+                <div class="batch-badge">Max 10 Images</div>
+                <span class="card-icon">📱</span>
+                <h3 class="card-title">Batch Analysis</h3>
+                <p class="card-description">
+                    Analyze multiple products at once! Upload up to 10 images 
+                    for efficient carbon footprint analysis of your entire collection.
+                </p>
+                <button class="card-button" onclick="navigateToBatch()">
+                    Start Batch Analysis
+                </button>
+            </div>
+        </div>
+
+        <!-- Founders Section -->
+        <div style="text-align: center; margin: 60px 0;">
+            <button class="card-button" onclick="navigateToFounders()" style="font-size: 1.2rem; padding: 18px 40px;">
+                👥 Meet Our Founders
+            </button>
+        </div>
+
+        <!-- Features Section -->
+        <div class="features">
+            <h2 class="features-title">Why Choose EcoLens?</h2>
+            <div class="features-grid">
+                <div class="feature-item">
+                    <span class="feature-icon">🤖</span>
+                    <h4>AI-Powered Recognition</h4>
+                    <p>Advanced AI identifies products from images with high accuracy</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">🌍</span>
+                    <h4>Verified Data Sources</h4>
+                    <p>Carbon footprint data from trusted environmental databases</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">⚡</span>
+                    <h4>Instant Results</h4>
+                    <p>Get comprehensive analysis results in seconds</p>
+                </div>
+                <div class="feature-item">
+                    <span class="feature-icon">📊</span>
+                    <h4>Detailed Reports</h4>
+                    <p>In-depth environmental impact statements with methodology</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Loading state (hidden by default) -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Initializing EcoLens AI...</p>
+        </div>
+    </div>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 50;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + 'vw';
+                particle.style.animationDelay = Math.random() * 15 + 's';
+                particle.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Navigation functions
+        function navigateToSingle() {
+            showLoading('Preparing single image analysis...');
+            setTimeout(() => {
+                window.location.href = '/single-analysis';
+            }, 1000);
+        }
+
+        function navigateToManual() {
+            showLoading('Loading manual entry form...');
+            setTimeout(() => {
+                window.location.href = '/manual-entry';
+            }, 1000);
+        }
+
+        function navigateToBatch() {
+            showLoading('Setting up batch analysis (max 10 images)...');
+            setTimeout(() => {
+                window.location.href = '/batch-analysis';
+            }, 1000);
+        }
+
+        function navigateToFounders() {
+            window.location.href = '/founders';
+        }
+
+        function showLoading(message) {
+            const analysisOptions = document.getElementById('analysisOptions');
+            const loading = document.getElementById('loading');
+            
+            analysisOptions.style.display = 'none';
+            loading.style.display = 'block';
+            loading.querySelector('p').textContent = message;
+        }
+
+        // Logo click animation
+        document.getElementById('logo').addEventListener('click', function() {
+            this.style.animation = 'none';
+            setTimeout(() => {
+                this.style.animation = 'pulse 2s infinite';
+            }, 10);
+        });
+
+        // Initialize particles when page loads
+        window.addEventListener('load', function() {
+            createParticles();
+            
+            // Add entrance animations to cards
+            const cards = document.querySelectorAll('.option-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = (index * 0.2) + 's';
+            });
+        });
+
+        // Add some interactivity to feature items
+        document.querySelectorAll('.feature-item').forEach(item => {
+            item.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.05)';
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.card-button').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = size + 'px';
+                ripple.style.left = x + 'px';
+                ripple.style.top = y + 'px';
+                ripple.classList.add('ripple');
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# contact.yaml
+allContacts:
+  email: 'kumarteja.80@gmail.com'
+  phoneNumber: '+1.603491851'
+  postalAddress:
+    addressLines: ['343 Mount Support Road,356']
+    locality: 'Lebanon'
+    administrativeArea: 'NH'
+    postalCode: '03766'
+    regionCode: 'US'
